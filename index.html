@@ -88,6 +88,9 @@
     <div class="meta">Omer Loves Faezah But She Doesn't Listen.</div>
   </div>
 
+  <!-- Add your audio file -->
+  <audio id="clickAudio" preload="auto" src="WhatsApp Audio 2025-08-19 at 21.58.06.mp3"></audio>
+
   <script>
     const reds = [
       '#fff5f5', '#ffecec', '#ffdede', '#ffcfcf', '#ffbfbf', '#ffafaf', '#ff9f9f',
@@ -98,6 +101,7 @@
     const words = ["PLEASE", "LISTEN", "TO", "ME"];
     const btn = document.getElementById('pushBtn');
     const countEl = document.getElementById('count');
+    const clickAudio = document.getElementById('clickAudio');
 
     let state = { idx: 0, colorIdx: 0, count: 0 };
 
@@ -136,6 +140,10 @@
       ],{ duration: 220, easing: 'cubic-bezier(.2,.9,.3,1)' });
 
       render();
+
+      // Play audio
+      clickAudio.currentTime = 0;
+      clickAudio.play();
     });
 
     btn.addEventListener('keydown', (ev)=>{
