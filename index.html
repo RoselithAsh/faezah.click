@@ -83,8 +83,8 @@
 <body>
   <div class="card" role="main">
     <div class="title"><span class="emoji">👑</span><span>Faezah~</span></div>
-    <div id="count" class="counter">PLEASE</div>
-    <button id="pushBtn" class="btn" aria-label="Push the FAEZAH button">PUSH</button>
+    <div id="count" class="counter">0</div>
+    <button id="pushBtn" class="btn" aria-label="Push the FAEZAH button">PLEASE</button>
     <div class="meta">Omer Loves Faezah But She Doesn't Listen.</div>
   </div>
 
@@ -99,10 +99,11 @@
     const btn = document.getElementById('pushBtn');
     const countEl = document.getElementById('count');
 
-    let state = { idx: 0, colorIdx: 0 };
+    let state = { idx: 0, colorIdx: 0, count: 0 };
 
     function render(){
-      countEl.textContent = words[state.idx];
+      countEl.textContent = state.count.toLocaleString();
+      btn.textContent = words[state.idx];
       document.documentElement.style.setProperty('--bg', reds[state.colorIdx % reds.length]);
 
       const bg = reds[state.colorIdx % reds.length];
@@ -124,7 +125,7 @@
     }
 
     btn.addEventListener('click', () => {
-      // Move to next word
+      state.count += 1;
       state.idx = (state.idx + 1) % words.length;
       state.colorIdx = (state.colorIdx + 1) % reds.length;
 
@@ -136,7 +137,7 @@
 
       render();
 
-      // Speak the word
+      // Speak the word on the button
       const utter = new SpeechSynthesisUtterance(words[state.idx]);
       utter.rate = 0.95;
       utter.pitch = 1;
