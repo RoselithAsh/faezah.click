@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FAEZAH Button</title>
+  <title>Faezah Button</title>
   <style>
     :root{ --bg: #fff5f5; }
     html,body{height:100%;}
@@ -43,8 +43,8 @@
     .emoji{font-size:1.6rem;}
 
     .counter{
-      font-size:4.5rem;
-      line-height:1;
+      font-size:3rem;
+      line-height:1.2;
       margin:0.6rem 0 1.4rem 0;
       font-weight:700;
       color:#330000;
@@ -74,7 +74,7 @@
     .meta{font-size:0.9rem;color:rgba(0,0,0,0.55);margin-top:1rem}
 
     @media (max-width:420px){
-      .counter{font-size:3rem}
+      .counter{font-size:2.2rem}
       .title{font-size:1.6rem}
       .btn{--size:130px}
     }
@@ -82,14 +82,11 @@
 </head>
 <body>
   <div class="card" role="main">
-    <div class="title"><span class="emoji">👑</span><span>FAEZAH</span></div>
-    <div id="count" class="counter">0</div>
+    <div class="title"><span class="emoji">👑</span><span>Faezah~</span></div>
+    <div id="count" class="counter">PLEASE</div>
     <button id="pushBtn" class="btn" aria-label="Push the FAEZAH button">PUSH</button>
     <div class="meta">Omer Loves Faezah But She Doesn't Listen.</div>
   </div>
-
-  <!-- Audio file (local) -->
-  <audio id="clickAudio" preload="auto" src="faezah_audio.mpeg"></audio>
 
   <script>
     const reds = [
@@ -98,17 +95,17 @@
       '#ff1f1f', '#ee1010', '#cc0d0d', '#aa0a0a', '#880707', '#660404', '#440202', '#330000'
     ];
 
+    const words = ["PLEASE", "LISTEN", "TO", "ME"];
     const btn = document.getElementById('pushBtn');
     const countEl = document.getElementById('count');
-    const clickAudio = document.getElementById('clickAudio');
 
-    // State resets every reload
-    let state = { count: 0, idx: 0 };
+    let state = { idx: 0, colorIdx: 0 };
 
     function render(){
-      countEl.textContent = state.count.toLocaleString();
-      document.documentElement.style.setProperty('--bg', reds[state.idx % reds.length]);
-      const bg = reds[state.idx % reds.length];
+      countEl.textContent = words[state.idx];
+      document.documentElement.style.setProperty('--bg', reds[state.colorIdx % reds.length]);
+
+      const bg = reds[state.colorIdx % reds.length];
       function luminance(hex){
         const v = hex.replace('#','');
         const r = parseInt(v.substring(0,2),16)/255;
@@ -126,9 +123,10 @@
       }
     }
 
-    btn.addEventListener('click', async (e) => {
-      state.count += 1;
-      state.idx = (state.idx + 1) % reds.length;
+    btn.addEventListener('click', () => {
+      // Move to next word
+      state.idx = (state.idx + 1) % words.length;
+      state.colorIdx = (state.colorIdx + 1) % reds.length;
 
       btn.animate([
         { transform: 'scale(1)' },
@@ -138,16 +136,11 @@
 
       render();
 
-      // Try to play the included audio file. If playback is blocked, fallback to TTS.
-      try {
-        clickAudio.currentTime = 0;
-        await clickAudio.play();
-      } catch (err) {
-        const utter = new SpeechSynthesisUtterance('faezah');
-        utter.rate = 0.95;
-        utter.pitch = 1;
-        speechSynthesis.speak(utter);
-      }
+      // Speak the word
+      const utter = new SpeechSynthesisUtterance(words[state.idx]);
+      utter.rate = 0.95;
+      utter.pitch = 1;
+      speechSynthesis.speak(utter);
     });
 
     btn.addEventListener('keydown', (ev)=>{
