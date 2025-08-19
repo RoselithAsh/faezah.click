@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>FAIZAH Button</title>
+  <title>FAEZAH Button</title>
   <style>
     :root{ --bg: #fff5f5; }
     html,body{height:100%;}
@@ -82,10 +82,10 @@
 </head>
 <body>
   <div class="card" role="main">
-    <div class="title"><span class="emoji">👑</span><span>FAIZAH</span></div>
+    <div class="title"><span class="emoji">👑</span><span>FAEZAH</span></div>
     <div id="count" class="counter">0</div>
-    <button id="pushBtn" class="btn" aria-label="Push the FAIZAH button">PUSH</button>
-    <div class="meta">Background cycles through shades of red with every click.</div>
+    <button id="pushBtn" class="btn" aria-label="Push the FAEZAH button">PUSH</button>
+    <div class="meta">Omer Loves Faezah But She Doesn't Listen.</div>
   </div>
 
   <script>
@@ -110,13 +110,11 @@
       document.documentElement.style.setProperty('--bg', reds[state.idx % reds.length]);
       // Also update tint of button text for legibility on very dark backgrounds
       const bg = reds[state.idx % reds.length];
-      // calculate luminance quickly
       function luminance(hex){
         const v = hex.replace('#','');
         const r = parseInt(v.substring(0,2),16)/255;
         const g = parseInt(v.substring(2,4),16)/255;
         const b = parseInt(v.substring(4,6),16)/255;
-        // relative luminance
         return 0.2126*r + 0.7152*g + 0.0722*b;
       }
       const lum = luminance(bg);
@@ -129,10 +127,15 @@
       }
     }
 
+    // Prepare audio element
+    const audio = new Audio();
+    audio.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA"; // tiny placeholder silent mp3
+
     btn.addEventListener('click', (e) => {
       // Increment count and advance background index
       state.count += 1;
       state.idx = (state.idx + 1) % reds.length;
+
       // tiny pulse animation
       btn.animate([
         { transform: 'scale(1)' },
@@ -141,21 +144,18 @@
       ],{ duration: 220, easing: 'cubic-bezier(.2,.9,.3,1)' });
 
       render();
-      // Save
       localStorage.setItem('faizah_count', String(state.count));
       localStorage.setItem('faizah_idx', String(state.idx));
 
-      // Optional: brief confetti-like flash using box-shadow
-      const s = document.createElement('div');
-      // do nothing heavy; just a small visual cue
+      // Play sound saying "faezah"
+      const utter = new SpeechSynthesisUtterance("faezah");
+      speechSynthesis.speak(utter);
     });
 
-    // allow keyboard activation
     btn.addEventListener('keydown', (ev)=>{
       if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); btn.click(); }
     });
 
-    // Initialize
     render();
   </script>
 </body>
