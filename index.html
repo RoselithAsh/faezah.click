@@ -99,16 +99,12 @@
     const btn = document.getElementById('pushBtn');
     const countEl = document.getElementById('count');
 
-    // Load saved count and index from localStorage so refresh preserves state.
-    let state = {
-      count: parseInt(localStorage.getItem('faizah_count') || '0', 10),
-      idx: parseInt(localStorage.getItem('faizah_idx') || '0', 10)
-    };
+    // State resets every reload (no localStorage).
+    let state = { count: 0, idx: 0 };
 
     function render(){
       countEl.textContent = state.count.toLocaleString();
       document.documentElement.style.setProperty('--bg', reds[state.idx % reds.length]);
-      // Also update tint of button text for legibility on very dark backgrounds
       const bg = reds[state.idx % reds.length];
       function luminance(hex){
         const v = hex.replace('#','');
@@ -127,16 +123,10 @@
       }
     }
 
-    // Prepare audio element
-    const audio = new Audio();
-    audio.src = "data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA"; // tiny placeholder silent mp3
-
     btn.addEventListener('click', (e) => {
-      // Increment count and advance background index
       state.count += 1;
       state.idx = (state.idx + 1) % reds.length;
 
-      // tiny pulse animation
       btn.animate([
         { transform: 'scale(1)' },
         { transform: 'scale(1.06)' },
@@ -144,11 +134,11 @@
       ],{ duration: 220, easing: 'cubic-bezier(.2,.9,.3,1)' });
 
       render();
-      localStorage.setItem('faizah_count', String(state.count));
-      localStorage.setItem('faizah_idx', String(state.idx));
 
-      // Play sound saying "faezah"
-      const utter = new SpeechSynthesisUtterance("faezah");
+      // Play sound saying "faaeeeezahh"
+      const utter = new SpeechSynthesisUtterance("faaeeeezahh");
+      utter.rate = 0.9;
+      utter.pitch = 1;
       speechSynthesis.speak(utter);
     });
 
