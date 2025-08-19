@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FAIZAH Button</title>
+  <style>
+    :root{ --bg: #fff5f5; }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition:background 600ms ease;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .card{
+      text-align:center;
+      padding:3rem 2rem;
+      border-radius:20px;
+      backdrop-filter: blur(6px) saturate(120%);
+      box-shadow:0 10px 30px rgba(0,0,0,0.12);
+      background:rgba(255,255,255,0.35);
+      max-width:520px;
+      width:90%;
+    }
+
+    .title{
+      font-size:2.2rem;
+      margin:0 0 0.6rem 0;
+      letter-spacing:0.6px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:0.6rem;
+    }
+
+    .emoji{font-size:1.6rem;}
+
+    .counter{
+      font-size:4.5rem;
+      line-height:1;
+      margin:0.6rem 0 1.4rem 0;
+      font-weight:700;
+      color:#330000;
+      text-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .btn{
+      --size:160px;
+      width:var(--size);
+      height:var(--size);
+      display:inline-grid;
+      place-items:center;
+      border-radius:999px;
+      border:8px solid rgba(255,255,255,0.8);
+      background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.02));
+      font-size:1.2rem;
+      font-weight:700;
+      cursor:pointer;
+      user-select:none;
+      transition:transform 180ms cubic-bezier(.2,.9,.3,1), box-shadow 180ms;
+      box-shadow:0 8px 18px rgba(0,0,0,0.08);
+      color:#660000;
+    }
+
+    .btn:active{transform:scale(.96);} 
+
+    .meta{font-size:0.9rem;color:rgba(0,0,0,0.55);margin-top:1rem}
+
+    @media (max-width:420px){
+      .counter{font-size:3rem}
+      .title{font-size:1.6rem}
+      .btn{--size:130px}
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <div class="title"><span class="emoji">👑</span><span>FAIZAH</span></div>
+    <div id="count" class="counter">0</div>
+    <button id="pushBtn" class="btn" aria-label="Push the FAIZAH button">PUSH</button>
+    <div class="meta">Background cycles through shades of red with every click.</div>
+  </div>
+
+  <script>
+    // Array of red shades from lightest to darkest.
+    const reds = [
+      '#fff5f5', '#ffecec', '#ffdede', '#ffcfcf', '#ffbfbf', '#ffafaf', '#ff9f9f',
+      '#ff8f8f', '#ff7f7f', '#ff6f6f', '#ff5f5f', '#ff4f4f', '#ff3f3f', '#ff2f2f',
+      '#ff1f1f', '#ee1010', '#cc0d0d', '#aa0a0a', '#880707', '#660404', '#440202', '#330000'
+    ];
+
+    const btn = document.getElementById('pushBtn');
+    const countEl = document.getElementById('count');
+
+    // Load saved count and index from localStorage so refresh preserves state.
+    let state = {
+      count: parseInt(localStorage.getItem('faizah_count') || '0', 10),
+      idx: parseInt(localStorage.getItem('faizah_idx') || '0', 10)
+    };
+
+    function render(){
+      countEl.textContent = state.count.toLocaleString();
+      document.documentElement.style.setProperty('--bg', reds[state.idx % reds.length]);
+      // Also update tint of button text for legibility on very dark backgrounds
+      const bg = reds[state.idx % reds.length];
+      // calculate luminance quickly
+      function luminance(hex){
+        const v = hex.replace('#','');
+        const r = parseInt(v.substring(0,2),16)/255;
+        const g = parseInt(v.substring(2,4),16)/255;
+        const b = parseInt(v.substring(4,6),16)/255;
+        // relative luminance
+        return 0.2126*r + 0.7152*g + 0.0722*b;
+      }
+      const lum = luminance(bg);
+      if(lum < 0.25){
+        btn.style.color = '#ffdede';
+        btn.style.borderColor = 'rgba(255,255,255,0.12)';
+      } else {
+        btn.style.color = '#660000';
+        btn.style.borderColor = 'rgba(255,255,255,0.8)';
+      }
+    }
+
+    btn.addEventListener('click', (e) => {
+      // Increment count and advance background index
+      state.count += 1;
+      state.idx = (state.idx + 1) % reds.length;
+      // tiny pulse animation
+      btn.animate([
+        { transform: 'scale(1)' },
+        { transform: 'scale(1.06)' },
+        { transform: 'scale(1)' }
+      ],{ duration: 220, easing: 'cubic-bezier(.2,.9,.3,1)' });
+
+      render();
+      // Save
+      localStorage.setItem('faizah_count', String(state.count));
+      localStorage.setItem('faizah_idx', String(state.idx));
+
+      // Optional: brief confetti-like flash using box-shadow
+      const s = document.createElement('div');
+      // do nothing heavy; just a small visual cue
+    });
+
+    // allow keyboard activation
+    btn.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); btn.click(); }
+    });
+
+    // Initialize
+    render();
+  </script>
+</body>
+</html>
