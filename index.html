@@ -136,12 +136,6 @@
       ],{ duration: 220, easing: 'cubic-bezier(.2,.9,.3,1)' });
 
       render();
-
-      // Speak the word on the button
-      const utter = new SpeechSynthesisUtterance(words[state.idx]);
-      utter.rate = 0.95;
-      utter.pitch = 1;
-      speechSynthesis.speak(utter);
     });
 
     btn.addEventListener('keydown', (ev)=>{
