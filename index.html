@@ -123,6 +123,9 @@
       }
     }
 
+    // Prepare audio element with your uploaded file embedded as base64
+    const clickAudio = new Audio("data:audio/mpeg;base64,//vBDAAP8AAAcwAAAAAAAA5gAAAAAAABzAAAAAAAADmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...");
+
     btn.addEventListener('click', (e) => {
       state.count += 1;
       state.idx = (state.idx + 1) % reds.length;
@@ -135,11 +138,9 @@
 
       render();
 
-      // Play sound saying "faaeeeezahh"
-      const utter = new SpeechSynthesisUtterance("faaeeeezahh");
-      utter.rate = 0.9;
-      utter.pitch = 1;
-      speechSynthesis.speak(utter);
+      // Play uploaded pronunciation
+      clickAudio.currentTime = 0;
+      clickAudio.play();
     });
 
     btn.addEventListener('keydown', (ev)=>{
