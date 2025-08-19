@@ -88,8 +88,10 @@
     <div class="meta">Omer Loves Faezah But She Doesn't Listen.</div>
   </div>
 
+  <!-- Audio file (local) -->
+  <audio id="clickAudio" preload="auto" src="faezah_audio.mpeg"></audio>
+
   <script>
-    // Array of red shades from lightest to darkest.
     const reds = [
       '#fff5f5', '#ffecec', '#ffdede', '#ffcfcf', '#ffbfbf', '#ffafaf', '#ff9f9f',
       '#ff8f8f', '#ff7f7f', '#ff6f6f', '#ff5f5f', '#ff4f4f', '#ff3f3f', '#ff2f2f',
@@ -98,8 +100,9 @@
 
     const btn = document.getElementById('pushBtn');
     const countEl = document.getElementById('count');
+    const clickAudio = document.getElementById('clickAudio');
 
-    // State resets every reload (no localStorage).
+    // State resets every reload
     let state = { count: 0, idx: 0 };
 
     function render(){
@@ -123,10 +126,7 @@
       }
     }
 
-    // Prepare audio element with your uploaded file embedded as base64
-    const clickAudio = new Audio("data:audio/mpeg;base64,//vBDAAP8AAAcwAAAAAAAA5gAAAAAAABzAAAAAAAADmAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...");
-
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', async (e) => {
       state.count += 1;
       state.idx = (state.idx + 1) % reds.length;
 
@@ -138,9 +138,16 @@
 
       render();
 
-      // Play uploaded pronunciation
-      clickAudio.currentTime = 0;
-      clickAudio.play();
+      // Try to play the included audio file. If playback is blocked, fallback to TTS.
+      try {
+        clickAudio.currentTime = 0;
+        await clickAudio.play();
+      } catch (err) {
+        const utter = new SpeechSynthesisUtterance('faezah');
+        utter.rate = 0.95;
+        utter.pitch = 1;
+        speechSynthesis.speak(utter);
+      }
     });
 
     btn.addEventListener('keydown', (ev)=>{
